@@ -3,7 +3,7 @@
 
 name: Build Spigot Jar
 env:
-    latest: '1.17.1'
+    latest: '1.20.1'
 
 on:
     workflow_dispatch:
@@ -20,7 +20,7 @@ jobs:
     #           uses: actions/setup-java@v2
     #           with:
     #               distribution: "adopt"
-    #               java-version: "16"
+    #               java-version: "17"
 
     #         - name: Download BuildTools.jar
     #           run: wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
@@ -51,12 +51,8 @@ jobs:
             matrix:
                 ver:
                     - 'latest'
-                    - '1.19.2'
-                    - '1.19.1'
-                    - '1.19'
-                    - '1.18.2'
-                    - '1.18.1'
-                    - '1.18'
+                    - '1.20.1'
+
         env:
             ver: ${{ matrix.ver }}
 
@@ -89,8 +85,8 @@ jobs:
         strategy:
             matrix:
                 ver:
-                    - '1.17.1'
-                    - '1.17'
+                    - '1.20.1'
+
         env:
             ver: ${{ matrix.ver }}
 
@@ -99,7 +95,7 @@ jobs:
               uses: actions/setup-java@v2
               with:
                   distribution: "adopt"
-                  java-version: "16"
+                  java-version: "17"
 
             - name: Download BuildTools.jar
               run: wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
