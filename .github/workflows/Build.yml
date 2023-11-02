@@ -44,15 +44,23 @@ jobs:
     #           with:
     #               name: env.tar
     #               path: env.tar
-    build_on_java18:
+    build_on_java17:
         # for minecraft 1.17+
         runs-on: ubuntu-latest
         strategy:
             matrix:
                 ver:
-                    - 'latest'
+                    - 'l.20.2'
                     - '1.20.1'
-
+                    - '1.20'
+                    - '1.19.4'
+                    - '1.19.3'
+                    - '1.19.2'
+                    - '1.19.1'
+                    - '1.19'
+                    - '1.18.2'
+                    - '1.18.1'
+                    - '1.18'
         env:
             ver: ${{ matrix.ver }}
 
@@ -85,7 +93,8 @@ jobs:
         strategy:
             matrix:
                 ver:
-                    - '1.20.1'
+                    - '1.17'
+                    -  '1.17.1'
 
         env:
             ver: ${{ matrix.ver }}
@@ -178,7 +187,7 @@ jobs:
         needs:
             - build_on_java16
             - build_on_java8
-            - build_on_java18
+            - build_on_java17
 
         runs-on: ubuntu-latest
 
@@ -195,7 +204,7 @@ jobs:
             - name: Upload to release
               uses: ncipollo/release-action@v1.8.0
               with:
-                  name: Build_Distribute
+                  name: spigot-release
                   allowUpdates: true
                   replacesArtifacts: true
                   tag: BuildRelease
@@ -203,12 +212,12 @@ jobs:
                   token: ${{ secrets.GITHUB_TOKEN }}
                   artifacts: spigot/*
 
-            - name: Setup aliyun oss
-              uses: manyuanrong/setup-ossutil@master
-              with:
-                endpoint: oss-cn-shanghai.aliyuncs.com
-                access-key-id: ${{ secrets.OSS_KEY_ID }}
-                access-key-secret: ${{ secrets.OSS_KEY_SECRET }}
-            
-            - name: Upload to OSS
-              run: ossutil cp -rf spigot/ oss://static-m-jay/spigot/
+#            - name: Setup aliyun oss
+#              uses: manyuanrong/setup-ossutil@master
+#              with:
+#                endpoint: oss-cn-shanghai.aliyuncs.com
+#                access-key-id: ${{ secrets.OSS_KEY_ID }}
+#                access-key-secret: ${{ secrets.OSS_KEY_SECRET }}
+#            
+#            - name: Upload to OSS
+#              run: ossutil cp -rf spigot/ oss://static-m-jay/spigot/
