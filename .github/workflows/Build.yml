@@ -200,7 +200,10 @@ jobs:
                   path: spigot/
 
             - run: "tree"
-
+            
+            - run: tar -c spigot -f spigot.tar.gz
+            - run: mv spigot.tar.gz spigot/
+            
             - name: Upload to release
               uses: ncipollo/release-action@v1.8.0
               with:
