@@ -3,7 +3,7 @@
 
 name: Build Spigot Jar 20.4
 env:
-    latest: '1.20.4'
+    latest: '1.21.1'
 
 on:
     workflow_dispatch:
@@ -44,6 +44,44 @@ jobs:
     #           with:
     #               name: env.tar
     #               path: env.tar
+    build_on_java21:
+        # for minecraft 1.20.5+
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                ver:
+                    - '1.21.2'
+                    - '1.21.1'
+                    - '1.21'
+                    - '1.20.6'
+                    - '1.20.5'
+        env:
+            ver: ${{ matrix.ver }}
+
+        steps:
+            - name: Setup java
+              uses: actions/setup-java@v2
+              with:
+                  distribution: "adopt"
+                  java-version: "21"
+
+            - name: Download BuildTools.jar
+              run: wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
+
+            - run: mkdir ./outputs
+
+            - name: Build Jars
+                # if: ${{ matrix.ver !=  env.latest }}
+              continue-on-error: false
+              run: java -jar BuildTools.jar --rev $ver --output-dir ./outputs
+
+            - name: Upload artifact
+              uses: actions/upload-artifact@v2
+              with:
+                  name: outputs
+                  path: outputs
+
+
     build_on_java17:
         # for minecraft 1.17+
         runs-on: ubuntu-latest
@@ -79,7 +117,7 @@ jobs:
             - run: mkdir ./outputs
 
             - name: Build Jars
-              # if: ${{ matrix.ver !=  env.latest }}
+                # if: ${{ matrix.ver !=  env.latest }}
               continue-on-error: false
               run: java -jar BuildTools.jar --rev $ver --output-dir ./outputs
 
@@ -114,7 +152,7 @@ jobs:
             - run: mkdir ./outputs
 
             - name: Build Jars
-              # if: ${{ matrix.ver !=  env.latest }}
+                # if: ${{ matrix.ver !=  env.latest }}
               continue-on-error: true
               run: java -jar BuildTools.jar --rev $ver --output-dir ./outputs
 
@@ -202,10 +240,10 @@ jobs:
                   path: spigot/
 
             - run: "tree"
-            
+
             - run: tar -c spigot -f spigot.tar.gz
             - run: mv spigot.tar.gz spigot/
-            
+
             - name: Upload to release
               uses: ncipollo/release-action@v1.8.0
               with:
@@ -223,6 +261,6 @@ jobs:
 #                endpoint: oss-cn-shanghai.aliyuncs.com
 #                access-key-id: ${{ secrets.OSS_KEY_ID }}
 #                access-key-secret: ${{ secrets.OSS_KEY_SECRET }}
-#            
+#
 #            - name: Upload to OSS
 #              run: ossutil cp -rf spigot/ oss://static-m-jay/spigot/
